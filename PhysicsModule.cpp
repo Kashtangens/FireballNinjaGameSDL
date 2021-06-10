@@ -89,23 +89,28 @@ void CheckMapCollision(Entity *entity1, MapManager &mapManager, Map &map)
     // printf("In checkCollision dx: %f, dy: %f\n", dx, dy);
 }
 
-void CheckCollision(SDL_Rect boxCollider1, float &dx, float &dy, SDL_Rect boxCollider2)
+void CheckCollision(Entity* entity1, Entity* entity2)
 {
-    if (dx > 0)
+    // Проверку коллизий сделай, примерно как в карте, чтобы можно было направления указывать
+    if (entity1->GetRect().GetRect().y + entity1->GetRect().GetRect().h + entity1->GetDy() <= entity2->GetRect().GetRect().y + entity2->GetDy())
     {
-        
+        return;
     }
-    else if (dx < 0)
+    if (entity2->GetRect().GetRect().y + entity2->GetRect().GetRect().h + entity2->GetDy() <= entity1->GetRect().GetRect().y + entity2->GetDy())
     {
+        return;
+    }
+    if (entity1->GetRect().GetRect().x + entity1->GetRect().GetRect().w + entity1->GetDx() <= entity2->GetRect().GetRect().x + entity2->GetDx())
+    {
+        return;
+    }
+    if (entity2->GetRect().GetRect().x + entity2->GetRect().GetRect().w + entity2->GetDx() <= entity1->GetRect().GetRect().x + entity1->GetDx())
+    {
+        return;
+    }
+    printf("COLLISION\n");
+    entity1->ReactOnCollisionWithEntity(entity2, 1, 1);
+    entity2->ReactOnCollisionWithEntity(entity1, 1, 1);
 
-    }
-    if (dy > 0)
-    {
-
-    }
-    else if (dy < 0)
-    {
-
-    }
 }
 //-------------------------------------------------------------------------------

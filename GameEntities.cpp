@@ -9,9 +9,11 @@ Entity::Entity()
     this->textures = NULL;
     this->speed = 0;
     this->rect = ScalableRect();
+    this->team = 0;
+    this->type = EntityTypes::EntityType;
 }
 
-Entity::Entity(const ScalableRect &rect, SDL_Texture **textures, int texturesCount, float speed, DrawableListClass *drawableList, EventListenersListClass *eventListenersList)
+Entity::Entity(const ScalableRect &rect, SDL_Texture **textures, int texturesCount, float speed, DrawableListClass *drawableList, EventListenersListClass *eventListenersList, int team)
 {
     this->rect = ScalableRect(rect);
     this->texturesCount = texturesCount;
@@ -35,6 +37,8 @@ Entity::Entity(const ScalableRect &rect, SDL_Texture **textures, int texturesCou
     {   
         this->selfEventListener = NULL;
     }
+    this->team = team;
+    this->type = EntityTypes::EntityType;
 }
 
 Entity::~Entity()
@@ -73,7 +77,14 @@ void Entity::Move(std::vector<Entity*> *entities, MapManager &mapManager, Map &m
 
 void Entity::ReactOnCollisionWithEntity(void* entity, char col_x, char col_y)
 {
-    
+    if (col_x != 0)
+    {
+        this->step_dx = 0;
+    }
+    if (col_y != 0)
+    {
+        this->step_dy = 0;
+    }    
 }
 
 void Entity::ReactOnCollisionWithMap(char col_x, char col_y)
@@ -124,12 +135,14 @@ Fireball::Fireball() : Entity()
     this->owner = NULL;
     this->mouseX = 0;
     this->mouseY = 0;
+    this->type = EntityTypes::FireballType;
 }
 
-Fireball::Fireball(const ScalableRect &rect, SDL_Texture **textures, int texturesCount, float speed, DrawableListClass *drawableList, EventListenersListClass *eventListenersList) : Entity(rect, textures, texturesCount, speed, drawableList, eventListenersList)
+Fireball::Fireball(const ScalableRect &rect, SDL_Texture **textures, int texturesCount, float speed, DrawableListClass *drawableList, EventListenersListClass *eventListenersList) : Entity(rect, textures, texturesCount, speed, drawableList, eventListenersList, 0)
 {
     this->mouseX = 0;
     this->mouseY = 0;
+    this->type = EntityTypes::FireballType;
 }
 
 Fireball::~Fireball()
@@ -239,6 +252,7 @@ void Fireball::ReactOnCollisionWithMap(char col_x, char col_y)
 void Fireball::SetOwner(Entity* owner)
 {
     this->owner = owner;
+    this->team = owner->GetTeam();
 }
 
 
@@ -247,13 +261,15 @@ Player::Player() : Entity()
 {
     this->hp = 0;
     this->fireball = NULL;
+    this->type = EntityTypes::PlayerType;
 }
 
-Player::Player(const ScalableRect &rect, SDL_Texture **textures, int texturesCount, float speed, DrawableListClass *drawableList, EventListenersListClass *eventListenersList, int hp, Fireball *fireball) : Entity(rect, textures, texturesCount, speed, drawableList, eventListenersList)
+Player::Player(const ScalableRect &rect, SDL_Texture **textures, int texturesCount, float speed, DrawableListClass *drawableList, EventListenersListClass *eventListenersList, int hp, Fireball *fireball, int team) : Entity(rect, textures, texturesCount, speed, drawableList, eventListenersList, team)
 {
     this->hp = hp;
     this->fireball = fireball;
     this->fireball->SetOwner(this);
+    this->type = EntityTypes::PlayerType;
 }
 
 Player::~Player()
@@ -389,7 +405,7 @@ void BotFireball::PreMove(std::vector<Entity*> *entities, MapManager &mapManager
             {
                 continue;
             }
-            if ((map.player_path[i][j] < map.player_path[my_map_y][my_map_x] && map.player_path[i][j] != -1))
+            if ((map.player_path[i][j] < map.player_path[my_map_y][my_map_x] && map.player_path[i][j] != -1) || (map.player_path[i][j] == 0))
             {
                 printf("Nearest %d %d %d\n", i, j, map.player_path[i][j]);
                 distanceX = j * mathTileSize + mathTileSize/2 - this->rect.GetRect().x - this->rect.GetRect().w/2;
@@ -425,7 +441,7 @@ BotPlayer::BotPlayer() : Player()
     // this->state = BotStates::Attack;
 }
 
-BotPlayer::BotPlayer(const ScalableRect &rect, SDL_Texture **textures, int texturesCount, float speed, DrawableListClass *drawableList, int hp, BotFireball *fireball)/* : Player(rect, textures, texturesCount, speed, drawableList, NULL, hp, fireball)*/
+BotPlayer::BotPlayer(const ScalableRect &rect, SDL_Texture **textures, int texturesCount, float speed, DrawableListClass *drawableList, int hp, BotFireball *fireball, int team)/* : Player(rect, textures, texturesCount, speed, drawableList, NULL, hp, fireball)*/
 {
     this->rect = ScalableRect(rect);
     this->texturesCount = texturesCount;
@@ -444,6 +460,8 @@ BotPlayer::BotPlayer(const ScalableRect &rect, SDL_Texture **textures, int textu
     this->hp = hp;
     this->fireball = fireball;
     this->fireball->SetOwner(this);
+    this->team = team;
+    this->type = EntityTypes::PlayerType;
     // this->state = BotStates::Attack;
 }
 

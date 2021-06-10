@@ -12,9 +12,7 @@
 enum EntityTypes {
     EntityType,
     FireballType,
-    PlayerType,
-    BotFireballType,
-    BotPlayerType
+    PlayerType
 };
 
 enum BotStates
@@ -28,7 +26,7 @@ class Entity: public EventListener, public Drawable
 public:
     Entity();
 
-    Entity(const ScalableRect &rect, SDL_Texture **textures, int texturesCount, float speed, DrawableListClass *drawableList, EventListenersListClass *eventListenersList);
+    Entity(const ScalableRect &rect, SDL_Texture **textures, int texturesCount, float speed, DrawableListClass *drawableList, EventListenersListClass *eventListenersList, int team);
 
     ~Entity();
 
@@ -100,7 +98,7 @@ class Player: public Entity
 public:
     Player();
 
-    Player(const ScalableRect &rect, SDL_Texture **textures, int texturesCount, float speed, DrawableListClass *drawableList, EventListenersListClass *eventListenersList, int hp, Fireball *fireball);
+    Player(const ScalableRect &rect, SDL_Texture **textures, int texturesCount, float speed, DrawableListClass *drawableList, EventListenersListClass *eventListenersList, int hp, Fireball *fireball, int team);
 
     ~Player();
 
@@ -136,7 +134,7 @@ class BotPlayer: public Player
 public:
     BotPlayer();
 
-    BotPlayer(const ScalableRect &rect, SDL_Texture **textures, int texturesCount, float speed, DrawableListClass *drawableList, int hp, BotFireball *fireball);
+    BotPlayer(const ScalableRect &rect, SDL_Texture **textures, int texturesCount, float speed, DrawableListClass *drawableList, int hp, BotFireball *fireball, int team);
 
     virtual void PreMove(std::vector<Entity*> *entities, MapManager &mapManager, Map &map);
 

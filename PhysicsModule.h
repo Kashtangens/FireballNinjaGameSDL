@@ -13,7 +13,7 @@
 #include "GameEntities.h"
 
 // Система рассчета коллизий
-void CheckCollision(SDL_Rect boxCollider1, float &dx, float &dy, SDL_Rect boxCollider2);
+void CheckCollision(Entity* entity1, Entity* entity2);
 
 void CheckMapCollision(Entity* entity1, MapManager &MapManager, Map &map);
 

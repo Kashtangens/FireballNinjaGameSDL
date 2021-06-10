@@ -11,7 +11,7 @@ void SinglePlayer::StartLevel(DrawableListClass *drawableList, EventListenersLis
     ScalableRect playerRect = ScalableRect(64, 64, 30, 42, wnd, SR_HorizontalAlignment_Left | SR_VerticalAlignment_Top);
     SDL_Texture **playerTextures = new SDL_Texture*[1];
     playerTextures[0] = loadTexture("textures/Entities/PlayerSprite.png", wnd->renderer);
-    Player* player = new Player(playerRect, playerTextures, 1, playerSpeedConstant, drawableList, eventListenersList, 100, fireball);
+    Player* player = new Player(playerRect, playerTextures, 1, playerSpeedConstant, drawableList, eventListenersList, 100, fireball, 1);
     entities.push_back(player);
     // Создаем противников
     ScalableRect botFireballRect = ScalableRect(512, 64, 24, 24, wnd, SR_HorizontalAlignment_Left | SR_VerticalAlignment_Top);
@@ -22,7 +22,7 @@ void SinglePlayer::StartLevel(DrawableListClass *drawableList, EventListenersLis
     ScalableRect enemyRect = ScalableRect(512, 64, 30, 42, wnd, SR_HorizontalAlignment_Left | SR_VerticalAlignment_Top);
     SDL_Texture **enemyTextures = new SDL_Texture*[1];
     enemyTextures[0] = loadTexture("textures/Entities/EnemySprite.png", wnd->renderer);
-    BotPlayer* enemy = new BotPlayer(enemyRect, enemyTextures, 1, playerSpeedConstant, drawableList, 100, botFireball);
+    BotPlayer* enemy = new BotPlayer(enemyRect, enemyTextures, 1, playerSpeedConstant, drawableList, 100, botFireball, 2);
     entities.push_back(enemy);
     // Загружаем карту
     #define mapW 16
@@ -101,7 +101,10 @@ void SinglePlayer::PlayIteration(MapManager &mapManager)
     // Проверяем коллизии
     for (auto entity = entities.begin(); entity != entities.end(); entity++)
     {
-        // CheckCollision();
+        for (auto entity2 = entity + 1; entity2 != entities.end(); entity2++)
+        {
+            CheckCollision(*entity, *entity2);
+        }
         CheckMapCollision(*entity, mapManager, *map);
     }
     // 
