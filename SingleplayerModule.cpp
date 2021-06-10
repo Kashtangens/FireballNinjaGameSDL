@@ -3,22 +3,27 @@
 void SinglePlayer::StartLevel(DrawableListClass *drawableList, EventListenersListClass *eventListenersList, Window *wnd, MapManager *mapManager)
 {
     // Создаем игрока
-    ScalableRect fireballRect = ScalableRect(64, 64, 16, 16, wnd, SR_HorizontalAlignment_Left | SR_VerticalAlignment_Top);
-    // ScalableRect fireballRect = ScalableRect(64, 64, 32, 32, wnd, SR_HorizontalAlignment_Left | SR_VerticalAlignment_Top);
+    ScalableRect fireballRect = ScalableRect(64, 64, 24, 24, wnd, SR_HorizontalAlignment_Left | SR_VerticalAlignment_Top);
     SDL_Texture **fireballTextures = new SDL_Texture*[1];
     fireballTextures[0] = loadTexture("textures/Entities/FireSprite.png", wnd->renderer);
-    // fireballTextures[0] = loadTexture("textures/Entities/Shrek.png", wnd->renderer);
     Fireball* fireball = new Fireball(fireballRect, fireballTextures, 1, 200, drawableList, eventListenersList);
     entities.push_back(fireball);
-    // printf("fireball spawn rect: %d %d %d %d\n", fireballRect.GetRect().x, fireballRect.GetRect().y, fireballRect.GetRect().h, fireballRect.GetRect().w);
-    // printf("fireball spawn drawable rect: %d %d %d %d\n", fireballRect.GetRectPointer()->x, fireballRect.GetRectPointer()->y, fireballRect.GetRectPointer()->h, fireballRect.GetRectPointer()->w);
     ScalableRect playerRect = ScalableRect(64, 64, 30, 42, wnd, SR_HorizontalAlignment_Left | SR_VerticalAlignment_Top);
     SDL_Texture **playerTextures = new SDL_Texture*[1];
     playerTextures[0] = loadTexture("textures/Entities/PlayerSprite.png", wnd->renderer);
     Player* player = new Player(playerRect, playerTextures, 1, playerSpeedConstant, drawableList, eventListenersList, 100, fireball);
     entities.push_back(player);
     // Создаем противников
-
+    ScalableRect botFireballRect = ScalableRect(512, 64, 24, 24, wnd, SR_HorizontalAlignment_Left | SR_VerticalAlignment_Top);
+    SDL_Texture **botFireballTextures = new SDL_Texture*[1];
+    botFireballTextures[0] = loadTexture("textures/Entities/EnemyFireSprite.png", wnd->renderer);
+    BotFireball* botFireball = new BotFireball(botFireballRect, botFireballTextures, 1, 200, drawableList);
+    entities.push_back(botFireball);
+    ScalableRect enemyRect = ScalableRect(512, 64, 30, 42, wnd, SR_HorizontalAlignment_Left | SR_VerticalAlignment_Top);
+    SDL_Texture **enemyTextures = new SDL_Texture*[1];
+    enemyTextures[0] = loadTexture("textures/Entities/EnemySprite.png", wnd->renderer);
+    BotPlayer* enemy = new BotPlayer(enemyRect, enemyTextures, 1, playerSpeedConstant, drawableList, 100, botFireball);
+    entities.push_back(enemy);
     // Загружаем карту
     #define mapW 16
     #define mapH 16
@@ -45,19 +50,19 @@ void SinglePlayer::StartLevel(DrawableListClass *drawableList, EventListenersLis
         },
         {
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0,-1,-1,-1,-1, 0,-1,-1,-1,-1,-1,-1,-1,-1,-1, 0},
+            {0,-1,-1, 0,-1, 0,-1,-1,-1,-1,-1,-1,-1,-1,-1, 0},
+            {0,-1,-1, 0,-1, 0,-1,-1,-1,-1,-1,-1,-1,-1,-1, 0},
+            {0,-1,-1, 0, 0, 0,-1,-1,-1,-1,-1,-1,-1,-1,-1, 0},
+            {0,-1,-1,-1,-1, 0,-1,-1,-1, 0, 0, 0,-1,-1,-1, 0},
+            {0,-1,-1, 0, 0, 0,-1,-1,-1,-1,-1, 0,-1,-1,-1, 0},
+            {0,-1,-1,-1,-1, 0,-1,-1,-1,-1,-1, 0,-1,-1,-1, 0},
+            {0,-1,-1,-1,-1, 0,-1,-1,-1,-1,-1,-1,-1,-1,-1, 0},
             {0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 0},
             {0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 0},
-            {0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 0},
-            {0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 0},
-            {0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 0},
-            {0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 0},
-            {0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 0},
-            {0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 0},
-            {0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 0},
-            {0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 0},
-            {0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 0},
-            {0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 0},
-            {0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 0},
+            {0,-1,-1,-1,-1, 0,-1,-1,-1,-1,-1,-1,-1,-1,-1, 0},
+            {0,-1,-1,-1,-1, 0, 0, 0, 0,-1,-1, 0,-1,-1,-1, 0},
+            {0,-1,-1,-1,-1, 0,-1,-1,-1,-1,-1,-1,-1,-1,-1, 0},
             {0,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
         }
@@ -86,6 +91,7 @@ void SinglePlayer::StartLevel(DrawableListClass *drawableList, EventListenersLis
 
 void SinglePlayer::PlayIteration(MapManager &mapManager)
 {
+    map->ReloadPaths();
     // Все продумывают свое перемещение
     for (auto entity = entities.begin(); entity != entities.end(); entity++)
     {
@@ -104,6 +110,15 @@ void SinglePlayer::PlayIteration(MapManager &mapManager)
     {
         (*entity)->Move(&entities, mapManager, *map);
     }
+
+    // for (int i = 0; i < map->GetMapHeight(); i++)
+    // {
+    //     for (int j = 0; j < map->GetMapWidth(); j++)
+    //     {
+    //         std::cout << map->player_path[i][j] << " ";
+    //     }
+    //     std::cout << "\n";
+    // }
 }
 
 void SinglePlayer::ExitLevel()

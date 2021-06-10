@@ -88,6 +88,8 @@ Map::Map()
     this->size_x = 0;
     this->size_y = 0;
     this->mapManager = NULL;
+    this->player_path = NULL;
+    this->fireball_path = NULL;
 }
 
 Map::Map(int size_x, int size_y, DrawableListClass *drawableList, MapManager *mapManager)
@@ -102,6 +104,18 @@ Map::Map(int size_x, int size_y, DrawableListClass *drawableList, MapManager *ma
         for (int i = 0; i < size_y; i++)
         {
             this->tiles[j][i] = new int[size_x];
+        }
+    }
+    this->player_path = new int*[size_y];
+    this->fireball_path = new int*[size_y];
+    for (int i = 0; i < size_y; i++)
+    {
+        this->player_path[i] = new int[size_x];
+        this->fireball_path[i] = new int[size_x];
+        for (int j = 0; j < size_x; j++)
+        {
+            this->player_path[i][j] = -1;
+            this->fireball_path[i][j] = -1;
         }
     }
     this->mapTexture = NULL;
@@ -121,6 +135,18 @@ Map::Map(int size_x, int size_y, int ***tiles, DrawableListClass *drawableList, 
     this->size_x = size_x;
     this->size_y = size_y;
     this->tiles = tiles;
+    this->player_path = new int*[size_y];
+    this->fireball_path = new int*[size_y];
+    for (int i = 0; i < size_y; i++)
+    {
+        this->player_path[i] = new int[size_x];
+        this->fireball_path[i] = new int[size_x];
+        for (int j = 0; j < size_x; j++)
+        {
+            this->player_path[i][j] = -1;
+            this->fireball_path[i][j] = -1;
+        }
+    }
     this->mapManager = mapManager;
     this->mapTexture = NULL;
     if (drawableList != NULL)
@@ -142,6 +168,18 @@ Map::~Map()
     }
     if (this->selfDrawable != NULL)
         ((DrawableListStruct*)(this->selfDrawable))->drawableObject = NULL;
+    if (this->tiles != NULL)
+    {
+        delete[] this->tiles;
+    }
+    if (this->player_path != NULL)
+    {
+        delete[] this->player_path;
+    }
+    if (this->fireball_path != NULL)
+    {
+        delete[] this->fireball_path;
+    }
 }
 
 void Map::RenderMapTexture()
@@ -164,6 +202,18 @@ void Map::Draw(SDL_Renderer *renderer)
                     }
                 }
             }
+        }
+    }
+}
+
+void Map::ReloadPaths()
+{
+    for (int i = 0; i < size_y; i++)
+    {
+        for (int j = 0; j < size_x; j++)
+        {
+            this->player_path[i][j] = -1;
+            this->fireball_path[i][j] = -1;
         }
     }
 }

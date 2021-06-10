@@ -80,6 +80,8 @@ public:
 
     int GetMapHeight();
 
+    void ReloadPaths();
+
 private:
     int size_x, size_y;
     SDL_Texture *mapTexture;

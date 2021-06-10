@@ -7,13 +7,20 @@
 #include "TimeManager.h"
 // #include "PhysicsModule.h"
 #include <vector>
+#include <queue>
 
-enum EntityType {
+enum EntityTypes {
     EntityType,
     FireballType,
     PlayerType,
     BotFireballType,
     BotPlayerType
+};
+
+enum BotStates
+{
+    Attack,
+    Defence
 };
 
 class Entity: public EventListener, public Drawable
@@ -45,6 +52,10 @@ public:
 
     float GetDy();
 
+    EntityTypes GetType();
+
+    int GetTeam();
+
 protected:
     float dx, dy;
     float step_dx, step_dy;
@@ -53,7 +64,7 @@ protected:
     SDL_Texture **textures;
     ScalableRect rect;
     int team;
-
+    EntityTypes type;
 };
 
 class Fireball: public Entity
@@ -110,6 +121,26 @@ protected:
     Fireball *fireball;
 };
 
+class BotFireball: public Fireball
+{
+public:
+    BotFireball();
 
+    BotFireball(const ScalableRect &rect, SDL_Texture **textures, int textureCount, float speed, DrawableListClass *drawableList);
+
+    virtual void PreMove(std::vector<Entity*> *entities, MapManager &mapManager, Map &map);
+};
+
+class BotPlayer: public Player
+{
+public:
+    BotPlayer();
+
+    BotPlayer(const ScalableRect &rect, SDL_Texture **textures, int texturesCount, float speed, DrawableListClass *drawableList, int hp, BotFireball *fireball);
+
+    virtual void PreMove(std::vector<Entity*> *entities, MapManager &mapManager, Map &map);
+
+    BotStates state;
+};
 
 #endif
