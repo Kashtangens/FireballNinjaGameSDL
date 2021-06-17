@@ -2,6 +2,7 @@
 
 void SinglePlayer::StartLevel(DrawableListClass *drawableList, EventListenersListClass *eventListenersList, Window *wnd, MapManager *mapManager)
 {
+    isGamePaused = false;
     // Создаем игрока
     ScalableRect fireballRect = ScalableRect(64, 64, 24, 24, wnd, SR_HorizontalAlignment_Left | SR_VerticalAlignment_Top);
     SDL_Texture **fireballTextures = new SDL_Texture*[1];
@@ -91,37 +92,39 @@ void SinglePlayer::StartLevel(DrawableListClass *drawableList, EventListenersLis
 
 void SinglePlayer::PlayIteration(MapManager &mapManager)
 {
-    map->ReloadPaths();
-    // Все продумывают свое перемещение
-    for (auto entity = entities.begin(); entity != entities.end(); entity++)
+    if (!isGamePaused)
     {
-        (*entity)->PreMove(&entities, mapManager, *map);
-    }
-    //
-    // Проверяем коллизии
-    for (auto entity = entities.begin(); entity != entities.end(); entity++)
-    {
-        for (auto entity2 = entity + 1; entity2 != entities.end(); entity2++)
+        map->ReloadPaths();
+        // Все продумывают свое перемещение
+        for (auto entity = entities.begin(); entity != entities.end(); entity++)
         {
-            CheckCollision(*entity, *entity2);
+            (*entity)->PreMove(&entities, mapManager, *map);
         }
-        CheckMapCollision(*entity, mapManager, *map);
+        //
+        // Проверяем коллизии
+        for (auto entity = entities.begin(); entity != entities.end(); entity++)
+        {
+            for (auto entity2 = entity + 1; entity2 != entities.end(); entity2++)
+            {
+                CheckCollision(*entity, *entity2);
+            }
+            CheckMapCollision(*entity, mapManager, *map);
+            if ((*entity)->GetType() == PlayerType)
+            {
+                if (((Player*)(*entity))->GetHP() <= 0)
+                {
+                    isGamePaused = true;
+                    return;
+                }
+            }
+        }
+        // Перемещаем 
+        for (auto entity = entities.begin(); entity != entities.end(); entity++)
+        {
+            (*entity)->Move(&entities, mapManager, *map);
+            printf("%d\n", (*entity)->GetTeam());
+        }
     }
-    // 
-    // Перемещаем 
-    for (auto entity = entities.begin(); entity != entities.end(); entity++)
-    {
-        (*entity)->Move(&entities, mapManager, *map);
-        printf("%d\n", (*entity)->GetTeam());
-    }
-    // for (int i = 0; i < map->GetMapHeight(); i++)
-    // {
-    //     for (int j = 0; j < map->GetMapWidth(); j++)
-    //     {
-    //         std::cout << map->player_path[i][j] << " ";
-    //     }
-    //     std::cout << "\n";
-    // }
 }
 
 void SinglePlayer::ExitLevel()

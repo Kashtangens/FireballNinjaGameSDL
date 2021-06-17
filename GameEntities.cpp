@@ -399,7 +399,7 @@ void Player::ReactOnCollisionWithEntity(Entity* entity, char col_x, char col_y)
     {
         if (entity->GetTeam() != this->team)
         {
-            this->hp--;
+            this->hp-=20;
         }
     }
 }
@@ -409,6 +409,11 @@ void Player::ReactOnCollisionWithEntity(Entity* entity, char col_x, char col_y)
 // {
 //     this->rect.TranslateXY(this->dx * TimeManager::GetDeltaTime(), this->dy * TimeManager::GetDeltaTime());
 // }
+
+int Player::GetHP()
+{
+    return this->hp;
+}
 
 BotFireball::BotFireball() : Fireball() {}
 

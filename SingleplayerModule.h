@@ -12,6 +12,7 @@ namespace SinglePlayer
 
     static std::vector<Entity*> entities = std::vector<Entity*>();
     static Map *map;
+    static bool isGamePaused;
     
     void StartLevel(DrawableListClass *drawableList, EventListenersListClass *eventListenersList, Window *wnd, MapManager* mapManager);
 

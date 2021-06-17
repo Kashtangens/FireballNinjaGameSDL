@@ -114,6 +114,8 @@ public:
 
     // virtual void ReactOnCollisionWithMap(Tile &tile, char col_x, char col_y);
 
+    int GetHP();
+
 protected:
     int hp;
     Fireball *fireball;
