@@ -42,7 +42,7 @@ public:
 
     ScalableRect* GetRectPointer();
 
-    virtual void ReactOnCollisionWithEntity(void* entity, char col_x, char col_y);
+    virtual void ReactOnCollisionWithEntity(Entity* entity, char col_x, char col_y);
 
     virtual void ReactOnCollisionWithMap(char col_x, char col_y);
 
@@ -82,7 +82,7 @@ public:
 
     // virtual void Move(std::vector<Entity*> *entities, MapManager &mapManager, Map &map);
 
-    // virtual void ReactOnCollisionWithEntity(void* entity, char col_x, char col_y);
+    virtual void ReactOnCollisionWithEntity(Entity* entity, char col_x, char col_y);
 
     virtual void ReactOnCollisionWithMap(char col_x, char col_y);
     
@@ -110,7 +110,7 @@ public:
 
     // void Move(std::vector<Entity*> *entities);
 
-    // virtual void ReactOnCollisionWithEntity(void* entity, char col_x, char col_y);
+    virtual void ReactOnCollisionWithEntity(Entity* entity, char col_x, char col_y);
 
     // virtual void ReactOnCollisionWithMap(Tile &tile, char col_x, char col_y);
 

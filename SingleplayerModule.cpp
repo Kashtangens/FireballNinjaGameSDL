@@ -112,8 +112,8 @@ void SinglePlayer::PlayIteration(MapManager &mapManager)
     for (auto entity = entities.begin(); entity != entities.end(); entity++)
     {
         (*entity)->Move(&entities, mapManager, *map);
+        printf("%d\n", (*entity)->GetTeam());
     }
-
     // for (int i = 0; i < map->GetMapHeight(); i++)
     // {
     //     for (int j = 0; j < map->GetMapWidth(); j++)

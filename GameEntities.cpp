@@ -75,7 +75,7 @@ void Entity::Move(std::vector<Entity*> *entities, MapManager &mapManager, Map &m
     this->rect.TranslateXY(this->step_dx, this->step_dy);
 }
 
-void Entity::ReactOnCollisionWithEntity(void* entity, char col_x, char col_y)
+void Entity::ReactOnCollisionWithEntity(Entity* entity, char col_x, char col_y)
 {
     if (col_x != 0)
     {
@@ -241,6 +241,16 @@ void Fireball::PreMove(std::vector<Entity*> *entities, MapManager &mapManager, M
 //     this->rect.TranslateXY(copy_dx, copy_dy);
 // }
 
+void Fireball::ReactOnCollisionWithEntity(Entity* entity, char col_x, char col_y)
+{
+    if (entity->GetTeam() != this->team)
+    {
+        float x = this->owner->GetRect().GetStartRect().x;
+        float y = this->owner->GetRect().GetStartRect().y;
+        this->rect.SetXY(x, y);
+    }
+}
+
 void Fireball::ReactOnCollisionWithMap(char col_x, char col_y)
 {
     float x = this->owner->GetRect().GetStartRect().x;
@@ -372,6 +382,29 @@ void Player::PreMove(std::vector<Entity*> *entities, MapManager &mapManager, Map
     // --------------------------------------------------------
 }
 
+void Player::ReactOnCollisionWithEntity(Entity* entity, char col_x, char col_y)
+{
+    if (entity->GetType() != FireballType)
+    {
+        if (col_x != 0)
+        {
+            this->step_dx = 0;
+        }
+        if (col_y != 0)
+        {
+            this->step_dy = 0;
+        } 
+    }
+    else
+    {
+        if (entity->GetTeam() != this->team)
+        {
+            this->hp--;
+        }
+    }
+}
+
+
 // void Player::Move(std::vector<Entity*> *entities)
 // {
 //     this->rect.TranslateXY(this->dx * TimeManager::GetDeltaTime(), this->dy * TimeManager::GetDeltaTime());
@@ -458,10 +491,10 @@ BotPlayer::BotPlayer(const ScalableRect &rect, SDL_Texture **textures, int textu
         this->selfDrawable = NULL;
     }
     this->hp = hp;
-    this->fireball = fireball;
-    this->fireball->SetOwner(this);
     this->team = team;
     this->type = EntityTypes::PlayerType;
+    this->fireball = fireball;
+    this->fireball->SetOwner(this);
     // this->state = BotStates::Attack;
 }
 
